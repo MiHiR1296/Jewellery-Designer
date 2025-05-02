@@ -1,4 +1,0 @@
-touch .nojekyll
-git add .nojekyll
-git commit -m "Add .nojekyll file to fix MIME type issues"
-git push origin main
