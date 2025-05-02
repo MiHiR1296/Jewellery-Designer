@@ -1,0 +1,133 @@
+/* theme.css - Global theme styles with CSS variables */
+
+/* Import luxury fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&display=swap');
+
+/* Base styles that apply to both themes */
+:root {
+  /* Transition settings for smooth theme switching */
+  --transition-speed: 0.3s;
+  --transition-timing: ease;
+}
+
+/* Default theme transition properties */
+body, 
+body *:not(script):not(style) {
+  transition: background-color var(--transition-speed) var(--transition-timing),
+              color var(--transition-speed) var(--transition-timing),
+              border-color var(--transition-speed) var(--transition-timing),
+              box-shadow var(--transition-speed) var(--transition-timing);
+}
+
+/* Typography */
+body {
+  font-family: var(--font-primary);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Custom Luxury Styles */
+
+/* Buttons */
+button, 
+.btn {
+  font-family: var(--font-primary);
+  border-radius: 0.375rem;
+}
+
+button:focus, 
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--element-secondary);
+}
+
+/* Selects and Inputs */
+select,
+input[type="text"],
+input[type="number"],
+input[type="color"] {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-primary);
+}
+
+select:focus,
+input:focus {
+  outline: none;
+  border-color: var(--element-secondary);
+  box-shadow: 0 0 0 1px var(--element-secondary);
+}
+
+/* Range inputs (sliders) */
+input[type="range"] {
+  accent-color: var(--element-slider);
+}
+
+/* Color inputs */
+input[type="color"] {
+  height: 2.5rem;
+  padding: 0.25rem;
+}
+
+/* Luxury Navigation Bar */
+nav {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* Sidebar styles */
+.sidebar {
+  background-color: var(--bg-secondary);
+  border-left: 1px solid var(--border-light);
+}
+
+/* Section dividers */
+.section-divider {
+  border-top: 1px solid var(--border-light);
+  margin: 1.5rem 0;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--element-secondary);
+  outline-offset: 2px;
+}
+
+/* Theme toggle button specific styles */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Card and Panel styles */
+.luxury-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: var(--shadow-small);
+}
+
+/* Visual helpers for selected items */
+.selected-item {
+  background-color: var(--bg-highlight);
+  border-color: var(--border-secondary) !important;
+}
