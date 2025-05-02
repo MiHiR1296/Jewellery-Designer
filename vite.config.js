@@ -3,14 +3,15 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/Jewellery-Designer/', // This should match your repository name
+  base: '/Jewellery-Designer/',
   build: {
     outDir: 'dist',
-    emptyOutDir: true,
-    sourcemap: true,
-  },
-  server: {
-    port: 3000,
-    open: false
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
   }
 });

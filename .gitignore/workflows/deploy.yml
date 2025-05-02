@@ -29,6 +29,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Create .nojekyll file
+        run: touch dist/.nojekyll
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
