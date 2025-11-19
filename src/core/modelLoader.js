@@ -23,99 +23,42 @@ export const JEWELRY_MODELS = {
             'Ruby': 'ruby'
         }
     },
-    'ring_classic': {
-        name: "Classic Ring",
-        path: './assets/models/ring_classic.glb',
-        scale: 1.0,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        parts: ['band', 'gem', 'setting'],
-        type: 'ring',
-        materials: {
-            'band': 'metal',
-            'setting': 'metal',
-            'gem': 'gem'
-        },
-        defaultMaterials: {
-            'band': 'gold',
-            'setting': 'gold',
-            'gem': 'diamond'
-        }
-    },
-    'ring_diamond': {
+    'diamond_ring': {
         name: "Diamond Ring",
-        path: './assets/models/ring_diamond.glb',
+        path: './assets/models/Diamond_Ring.glb',
         scale: 1.0,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        parts: ['band', 'prongs', 'center_gem', 'accent_gems'],
+        parts: ['Ring', 'Diamond', 'Setting', 'Band'],
         type: 'ring',
         materials: {
-            'band': 'metal',
-            'prongs': 'metal',
-            'center_gem': 'gem',
-            'accent_gems': 'gem'
+            'Ring': 'metal',
+            'Setting': 'metal',
+            'Band': 'metal',
+            'Diamond': 'gem'
         },
         defaultMaterials: {
-            'band': 'gold',
-            'prongs': 'gold',
-            'center_gem': 'diamond',
-            'accent_gems': 'diamond'
+            'Ring': 'gold',
+            'Setting': 'gold',
+            'Band': 'gold',
+            'Diamond': 'diamond'
         }
     },
-    'necklace_pendant': {
-        name: "Pendant Necklace",
-        path: './assets/models/necklace_pendant.glb',
+    'diamond_earrings': {
+        name: "Diamond Earrings",
+        path: './assets/models/Diamond_Earrings.glb',
         scale: 1.0,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        parts: ['chain', 'pendant', 'gem'],
-        type: 'necklace',
-        materials: {
-            'chain': 'metal',
-            'pendant': 'metal',
-            'gem': 'gem'
-        },
-        defaultMaterials: {
-            'chain': 'gold',
-            'pendant': 'gold',
-            'gem': 'diamond'
-        }
-    },
-    'earrings_stud': {
-        name: "Stud Earrings",
-        path: './assets/models/earrings_stud.glb',
-        scale: 1.0,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        parts: ['post', 'setting', 'gem'],
+        parts: ['Earrings', 'Diamonds'],
         type: 'earrings',
         materials: {
-            'post': 'metal',
-            'setting': 'metal',
-            'gem': 'gem'
+            'Earrings': 'metal',
+            'Diamonds': 'gem'
         },
         defaultMaterials: {
-            'post': 'gold',
-            'setting': 'gold',
-            'gem': 'diamond'
-        }
-    },
-    'bracelet_chain': {
-        name: "Chain Bracelet",
-        path: './assets/models/bracelet_chain.glb',
-        scale: 1.0,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        parts: ['chain', 'clasp'],
-        type: 'bracelet',
-        materials: {
-            'chain': 'metal',
-            'clasp': 'metal'
-        },
-        defaultMaterials: {
-            'chain': 'gold',
-            'clasp': 'gold'
+            'Earrings': 'gold',
+            'Diamonds': 'diamond'
         }
     }
 };

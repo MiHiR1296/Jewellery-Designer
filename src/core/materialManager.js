@@ -6,7 +6,7 @@ export const METAL_PRESETS = {
         color: 0xFFD700,
         roughness: 0.13,
         metalness: 1.0,
-        envMapIntensity: 1.0,
+        envMapIntensity: 0.7, // Reduced from 1.0 to prevent overblown reflections
         clearcoat: 0.0,
         reflectivity: 1.0,
         ior: 2.5
@@ -15,7 +15,7 @@ export const METAL_PRESETS = {
         color: 0xE0E0E0,
         roughness: 0.1,
         metalness: 1.0,
-        envMapIntensity: 1.2,
+        envMapIntensity: 0.8, // Reduced from 1.2
         clearcoat: 0.0,
         reflectivity: 1.0,
         ior: 2.3
@@ -24,7 +24,7 @@ export const METAL_PRESETS = {
         color: 0xE5E4E2,
         roughness: 0.08,
         metalness: 1.0,
-        envMapIntensity: 1.1,
+        envMapIntensity: 0.75, // Reduced from 1.1
         clearcoat: 0.0,
         reflectivity: 1.0,
         ior: 2.7
@@ -33,7 +33,7 @@ export const METAL_PRESETS = {
         color: 0xF7C9B0,
         roughness: 0.15,
         metalness: 1.0,
-        envMapIntensity: 0.95,
+        envMapIntensity: 0.65, // Reduced from 0.95
         clearcoat: 0.0,
         reflectivity: 1.0,
         ior: 2.5
@@ -42,7 +42,7 @@ export const METAL_PRESETS = {
         color: 0xCD7F32,
         roughness: 0.2,
         metalness: 0.9,
-        envMapIntensity: 0.9,
+        envMapIntensity: 0.6, // Reduced from 0.9
         clearcoat: 0.0,
         reflectivity: 0.9,
         ior: 2.4
@@ -51,7 +51,7 @@ export const METAL_PRESETS = {
         color: 0xB87333,
         roughness: 0.17,
         metalness: 0.9,
-        envMapIntensity: 0.85,
+        envMapIntensity: 0.6, // Reduced from 0.85
         clearcoat: 0.0,
         reflectivity: 0.9,
         ior: 2.4
@@ -67,7 +67,7 @@ export const GEM_PRESETS = {
         transmission: 0.95,
         ior: 2.42,
         thickness: 4.0,
-        envMapIntensity: 1.6,
+        envMapIntensity: 1.0, // Reduced from 1.6 to prevent overblown reflections
         clearcoat: 0.5,
         clearcoatRoughness: 0.01,
         reflectivity: 0.9,
@@ -81,7 +81,7 @@ export const GEM_PRESETS = {
         transmission: 0.85,
         ior: 1.77,
         thickness: 3.5,
-        envMapIntensity: 1.2,
+        envMapIntensity: 0.85, // Reduced from 1.2
         clearcoat: 0.6,
         clearcoatRoughness: 0.05,
         reflectivity: 0.8,
@@ -95,7 +95,7 @@ export const GEM_PRESETS = {
         transmission: 0.85,
         ior: 1.77,
         thickness: 3.5,
-        envMapIntensity: 1.2,
+        envMapIntensity: 0.85, // Reduced from 1.2
         clearcoat: 0.6,
         clearcoatRoughness: 0.05,
         reflectivity: 0.8,
@@ -109,7 +109,7 @@ export const GEM_PRESETS = {
         transmission: 0.82,
         ior: 1.57,
         thickness: 3.5,
-        envMapIntensity: 1.1,
+        envMapIntensity: 0.8, // Reduced from 1.1
         clearcoat: 0.5,
         clearcoatRoughness: 0.08,
         reflectivity: 0.7,
@@ -123,7 +123,7 @@ export const GEM_PRESETS = {
         transmission: 0.8,
         ior: 1.54,
         thickness: 3.0,
-        envMapIntensity: 1.0,
+        envMapIntensity: 0.75, // Reduced from 1.0
         clearcoat: 0.4,
         clearcoatRoughness: 0.07,
         reflectivity: 0.7,
@@ -137,7 +137,7 @@ export const GEM_PRESETS = {
         transmission: 0.83,
         ior: 1.63,
         thickness: 3.0,
-        envMapIntensity: 1.1,
+        envMapIntensity: 0.8, // Reduced from 1.1
         clearcoat: 0.5,
         clearcoatRoughness: 0.06,
         reflectivity: 0.75,

@@ -81,7 +81,7 @@ export default class ThreeApplication {
             if (this.lightingSystem) {
                 // Update environment with a small delay to ensure model is fully loaded
                 setTimeout(() => {
-                    this.lightingSystem.updateEnvironmentMapIntensity(1.0);
+                    this.lightingSystem.updateEnvironmentMapIntensity(0.7); // Use reduced intensity for realistic rendering
                     console.log("Environment updated after model load");
                 }, 300);
             }
@@ -143,6 +143,13 @@ export default class ThreeApplication {
             this.materialManager.updateColor(hexColor);
         } catch (error) {
             console.error('Error updating color:', error);
+        }
+    }
+
+    // Update background theme
+    updateBackgroundTheme(isDarkMode) {
+        if (this.lightingSystem) {
+            this.lightingSystem.updateBackgroundTheme(isDarkMode);
         }
     }
     

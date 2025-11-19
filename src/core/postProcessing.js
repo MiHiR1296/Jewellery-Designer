@@ -12,9 +12,9 @@ import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
 // Post-processing settings specifically tuned for jewelry
 const JEWELRY_SETTINGS = {
     bloom: {
-        strength: 0.3,     // Stronger bloom for highlights on metals
-        radius: 0.6,       // Larger bloom radius for softer glow
-        threshold: 0.55    // Lower threshold to catch more highlights
+        strength: 0.15,    // Reduced from 0.3 for more subtle, realistic highlights
+        radius: 0.4,       // Reduced from 0.6 for tighter bloom
+        threshold: 0.75    // Increased from 0.55 to only bloom very bright areas (prevents overblown whites)
     },
     sao: {
         intensity: 0.2,    // Less intensity to avoid darkening metals
@@ -29,8 +29,8 @@ const JEWELRY_SETTINGS = {
         darkness: 0.7      // Softer vignette for jewelry
     },
     contrast: {
-        brightness: 0.05,  // Slight brightness boost
-        contrast: 0.15     // Increased contrast for metals and gems
+        brightness: 0.0,   // No brightness boost to prevent overblown whites
+        contrast: 0.25     // Increased from 0.15 for better depth and realism
     }
 };
 
@@ -134,24 +134,24 @@ export class PostProcessing {
         
         switch(metalType) {
             case 'gold':
-                this.bloomPass.strength = 0.135;
-                this.bloomPass.radius = 0.26;
-                this.bloomPass.threshold = 0.55;
+                this.bloomPass.strength = 0.1;
+                this.bloomPass.radius = 0.3;
+                this.bloomPass.threshold = 0.75;
                 break;
             case 'silver':
-                this.bloomPass.strength = 0.14;
-                this.bloomPass.radius = 0.25;
-                this.bloomPass.threshold = 0.5;
+                this.bloomPass.strength = 0.12;
+                this.bloomPass.radius = 0.3;
+                this.bloomPass.threshold = 0.75;
                 break;
             case 'platinum':
-                this.bloomPass.strength = 0.13;
-                this.bloomPass.radius = 0.24;
-                this.bloomPass.threshold = 0.6;
+                this.bloomPass.strength = 0.1;
+                this.bloomPass.radius = 0.3;
+                this.bloomPass.threshold = 0.8;
                 break;
             case 'rose-gold':
-                this.bloomPass.strength = 0.13;
-                this.bloomPass.radius = 0.37;
-                this.bloomPass.threshold = 0.5;
+                this.bloomPass.strength = 0.1;
+                this.bloomPass.radius = 0.3;
+                this.bloomPass.threshold = 0.75;
                 break;
             default:
                 // Reset to default jewelry settings

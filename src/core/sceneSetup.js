@@ -55,8 +55,8 @@ export class SceneManager {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping; // Better for shiny materials
-    this.renderer.toneMappingExposure = 1.0;
-    this.renderer.physicallyCorrectLights = true;
+    this.renderer.toneMappingExposure = 0.8; // Reduced to match lighting config and prevent overblown whites
+    this.renderer.useLegacyLights = false; // Use modern lighting instead of deprecated physicallyCorrectLights
 
     this.updateSize();
   }

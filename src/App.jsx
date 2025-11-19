@@ -91,6 +91,13 @@ function App() {
   const [selectedPart, setSelectedPart] = useState(null);
   const { isDarkMode, theme } = useTheme();
 
+  // Update 3D scene background when theme changes
+  useEffect(() => {
+    if (appRef.current) {
+      appRef.current.updateBackgroundTheme(isDarkMode);
+    }
+  }, [isDarkMode]);
+
   useEffect(() => {
     if (!canvasRef.current || appRef.current) return;
 
@@ -243,11 +250,12 @@ function App() {
             onModelChange={handleModelChange}
           />
           
-          {/* Quick Style Selector for Eclipse Ruby Ring */}
-          {selectedModel === 'eclipse_ruby_ring' && (
+          {/* Quick Style Selector for Eclipse Ruby Ring, Diamond Ring, and Diamond Earrings */}
+          {(selectedModel === 'eclipse_ruby_ring' || selectedModel === 'diamond_ring' || selectedModel === 'diamond_earrings') && (
             <QuickStyleSelector 
               onStyleChange={handleStyleChange}
               appRef={appRef}
+              selectedModel={selectedModel}
             />
           )}
           

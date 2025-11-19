@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Palette, Sparkles } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 
@@ -86,15 +86,204 @@ const ECLIPSE_RING_PRESETS = [
   }
 ];
 
-const QuickStyleSelector = ({ onStyleChange, appRef }) => {
-  const [selectedStyle, setSelectedStyle] = useState('classic-gold-ruby');
+// Predefined style configurations for the Diamond Ring
+const DIAMOND_RING_PRESETS = [
+  {
+    id: 'classic-gold-diamond',
+    name: 'Classic Gold & Diamond',
+    materials: {
+      Ring: 'gold',
+      Setting: 'gold',
+      Band: 'gold',
+      Diamond: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'silver-diamond',
+    name: 'Silver & Diamond',
+    materials: {
+      Ring: 'silver',
+      Setting: 'silver',
+      Band: 'silver',
+      Diamond: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'rose-gold-diamond',
+    name: 'Rose Gold & Diamond',
+    materials: {
+      Ring: 'rose-gold',
+      Setting: 'rose-gold',
+      Band: 'rose-gold',
+      Diamond: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'platinum-diamond',
+    name: 'Platinum & Diamond',
+    materials: {
+      Ring: 'platinum',
+      Setting: 'platinum',
+      Band: 'platinum',
+      Diamond: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'bronze-diamond',
+    name: 'Bronze & Diamond',
+    materials: {
+      Ring: 'bronze',
+      Setting: 'bronze',
+      Band: 'bronze',
+      Diamond: 'diamond'
+    },
+    finish: 'brushed'
+  },
+  {
+    id: 'copper-diamond',
+    name: 'Copper & Diamond',
+    materials: {
+      Ring: 'copper',
+      Setting: 'copper',
+      Band: 'copper',
+      Diamond: 'diamond'
+    },
+    finish: 'satin'
+  },
+  {
+    id: 'gold-diamond-polished',
+    name: 'Gold & Diamond (Polished)',
+    materials: {
+      Ring: 'gold',
+      Setting: 'gold',
+      Band: 'gold',
+      Diamond: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'platinum-diamond-satin',
+    name: 'Platinum & Diamond (Satin)',
+    materials: {
+      Ring: 'platinum',
+      Setting: 'platinum',
+      Band: 'platinum',
+      Diamond: 'diamond'
+    },
+    finish: 'satin'
+  }
+];
+
+// Predefined style configurations for the Diamond Earrings
+const DIAMOND_EARRINGS_PRESETS = [
+  {
+    id: 'classic-gold-diamond-earrings',
+    name: 'Classic Gold & Diamond',
+    materials: {
+      Earrings: 'gold',
+      Diamonds: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'silver-diamond-earrings',
+    name: 'Silver & Diamond',
+    materials: {
+      Earrings: 'silver',
+      Diamonds: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'rose-gold-diamond-earrings',
+    name: 'Rose Gold & Diamond',
+    materials: {
+      Earrings: 'rose-gold',
+      Diamonds: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'platinum-diamond-earrings',
+    name: 'Platinum & Diamond',
+    materials: {
+      Earrings: 'platinum',
+      Diamonds: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'bronze-diamond-earrings',
+    name: 'Bronze & Diamond',
+    materials: {
+      Earrings: 'bronze',
+      Diamonds: 'diamond'
+    },
+    finish: 'brushed'
+  },
+  {
+    id: 'copper-diamond-earrings',
+    name: 'Copper & Diamond',
+    materials: {
+      Earrings: 'copper',
+      Diamonds: 'diamond'
+    },
+    finish: 'satin'
+  },
+  {
+    id: 'gold-diamond-earrings-polished',
+    name: 'Gold & Diamond (Polished)',
+    materials: {
+      Earrings: 'gold',
+      Diamonds: 'diamond'
+    },
+    finish: 'polished'
+  },
+  {
+    id: 'platinum-diamond-earrings-satin',
+    name: 'Platinum & Diamond (Satin)',
+    materials: {
+      Earrings: 'platinum',
+      Diamonds: 'diamond'
+    },
+    finish: 'satin'
+  }
+];
+
+const QuickStyleSelector = ({ onStyleChange, appRef, selectedModel }) => {
+  // Get the appropriate presets based on the selected model
+  const getPresets = () => {
+    if (selectedModel === 'diamond_ring') {
+      return DIAMOND_RING_PRESETS;
+    }
+    if (selectedModel === 'diamond_earrings') {
+      return DIAMOND_EARRINGS_PRESETS;
+    }
+    return ECLIPSE_RING_PRESETS;
+  };
+
+  const presets = getPresets();
+  const [selectedStyle, setSelectedStyle] = useState(presets[0]?.id || '');
   const { isDarkMode, theme } = useTheme();
+
+  // Reset selected style when model changes
+  useEffect(() => {
+    const currentPresets = getPresets();
+    if (currentPresets.length > 0) {
+      setSelectedStyle(currentPresets[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedModel]);
 
   const handleStyleChange = (styleId) => {
     setSelectedStyle(styleId);
     
     // Find the selected style configuration
-    const style = ECLIPSE_RING_PRESETS.find(preset => preset.id === styleId);
+    const style = presets.find(preset => preset.id === styleId);
     if (!style || !appRef.current) return;
 
     // Apply the style to the model
@@ -108,29 +297,56 @@ const QuickStyleSelector = ({ onStyleChange, appRef }) => {
 
   // Function to apply a style to the model
   const applyStyle = (style) => {
-    if (!appRef.current) return;
+    if (!appRef.current || !appRef.current.materialManager) return;
     
     try {
+      const materialManager = appRef.current.materialManager;
+      
       // First apply the finish to ensure all metal parts have the right finish
       if (style.finish) {
         appRef.current.updateFinish(style.finish);
       }
       
-      // For each material in the style
+      // For each material in the style, apply directly to matching parts
       Object.entries(style.materials).forEach(([partName, materialType]) => {
-        // Select the part
-        const partObject = selectPartByName(partName);
+        // Find all objects with this part name
+        const partObjects = findAllPartsByName(partName);
         
-        if (partObject) {
-          // Set the global selected object
-          window.selectedObject = partObject;
+        if (partObjects.length > 0) {
+          console.log(`Applying ${materialType} to ${partObjects.length} part(s) named "${partName}"`);
           
-          // Apply the material
-          if (appRef.current.updateMaterial) {
-            appRef.current.updateMaterial(materialType);
+          // Determine if it's a metal or gem material
+          const isMetal = materialManager.METAL_PRESETS && materialType in materialManager.METAL_PRESETS;
+          const isGem = materialManager.GEM_PRESETS && materialType in materialManager.GEM_PRESETS;
+          
+          if (isMetal) {
+            // Apply metal material with current finish
+            const finish = style.finish || 'polished';
+            const material = materialManager.createMetalMaterial(materialType, finish);
+            
+            partObjects.forEach(object => {
+              if (object.material) {
+                object.material.dispose();
+              }
+              object.material = material.clone();
+              object.material.needsUpdate = true;
+            });
+          } else if (isGem) {
+            // Apply gem material
+            const material = materialManager.createGemMaterial(materialType);
+            
+            partObjects.forEach(object => {
+              if (object.material) {
+                object.material.dispose();
+              }
+              object.material = material.clone();
+              object.material.needsUpdate = true;
+            });
           } else {
-            console.warn('updateMaterial method not found on appRef.current');
+            console.warn(`Unknown material type: ${materialType}`);
           }
+        } else {
+          console.warn(`No parts found for: ${partName}. Available parts:`, getAllPartNames());
         }
       });
     } catch (error) {
@@ -138,28 +354,48 @@ const QuickStyleSelector = ({ onStyleChange, appRef }) => {
     }
   };
 
-  // Helper function to find and select a part by name
-  const selectPartByName = (partName) => {
+  // Helper function to find all parts by name (case-insensitive)
+  const findAllPartsByName = (partName) => {
     if (!window.scene) {
       console.warn('Scene not available');
-      return null;
+      return [];
     }
     
-    let targetObject = null;
+    const foundObjects = [];
+    const partNameLower = partName.toLowerCase();
     
-    // Find the mesh with the matching part name
+    // Find all meshes with matching part name
     window.scene.traverse((object) => {
-      if (object.isMesh && 
-          (object.name === partName || object.userData.partName === partName)) {
-        targetObject = object;
+      if (object.isMesh) {
+        const objectName = object.name ? object.name.toLowerCase() : '';
+        const userDataPartName = object.userData?.partName ? object.userData.partName.toLowerCase() : '';
+        
+        // Check for exact match or contains match
+        if (objectName === partNameLower || 
+            userDataPartName === partNameLower ||
+            objectName.includes(partNameLower) ||
+            userDataPartName.includes(partNameLower)) {
+          foundObjects.push(object);
+        }
       }
     });
     
-    if (!targetObject) {
-      console.warn(`Part not found: ${partName}`);
-    }
+    return foundObjects;
+  };
+
+  // Helper function to get all part names for debugging
+  const getAllPartNames = () => {
+    if (!window.scene) return [];
     
-    return targetObject;
+    const partNames = new Set();
+    window.scene.traverse((object) => {
+      if (object.isMesh) {
+        if (object.name) partNames.add(object.name);
+        if (object.userData?.partName) partNames.add(object.userData.partName);
+      }
+    });
+    
+    return Array.from(partNames);
   };
 
   return (
@@ -174,7 +410,7 @@ const QuickStyleSelector = ({ onStyleChange, appRef }) => {
       </h3>
       
       <div className="grid grid-cols-2 gap-2">
-        {ECLIPSE_RING_PRESETS.map((style) => (
+        {presets.map((style) => (
           <button
             key={style.id}
             onClick={() => handleStyleChange(style.id)}
@@ -217,7 +453,10 @@ const QuickStyleSelector = ({ onStyleChange, appRef }) => {
                   <span className="h-3 w-3 rounded-full bg-red-600" />
                 )}
                 {style.id.includes('diamond') && (
-                  <span className="h-3 w-3 rounded-full bg-blue-100" />
+                  <span className="h-3 w-3 rounded-full bg-blue-100 border border-gray-300" />
+                )}
+                {style.id.includes('copper') && (
+                  <span className="h-3 w-3 rounded-full bg-orange-600" />
                 )}
                 {style.id.includes('sapphire') && (
                   <span className="h-3 w-3 rounded-full bg-blue-600" />
@@ -236,7 +475,11 @@ const QuickStyleSelector = ({ onStyleChange, appRef }) => {
         border: '1px solid var(--border-light)' 
       }}>
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          Quick styles apply predefined materials and finishes to your Eclipse Ruby Ring.
+          Quick styles apply predefined materials and finishes to your {
+            selectedModel === 'diamond_ring' ? 'Diamond Ring' :
+            selectedModel === 'diamond_earrings' ? 'Diamond Earrings' :
+            'Eclipse Ruby Ring'
+          }.
           You can still customize individual parts after applying a style.
         </p>
       </div>

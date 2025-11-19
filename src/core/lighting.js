@@ -6,7 +6,7 @@ export const HDRI_OPTIONS = {
     jewelry_studio: {
         name: "Jewelry Studio",
         path: './assets/hdri/christmas_photo_studio_04_2k.exr',
-        defaultIntensity: 1.0,
+        defaultIntensity: 0.7, // Reduced from 1.0 for more realistic lighting
         description: "Bright studio lighting ideal for jewelry"
     },
     // soft_gold: {
@@ -33,7 +33,7 @@ export const HDRI_OPTIONS = {
 export const LIGHTING_CONFIG = {
     renderer: {
         toneMapping: 'ACESFilmicToneMapping',
-        toneMappingExposure: 1.2,
+        toneMappingExposure: 0.8, // Reduced from 1.2 to prevent overblown whites
         shadowMapType: 'PCFSoftShadowMap',
         physicallyCorrectLights: true,
         outputEncoding: 'sRGBEncoding',
@@ -42,8 +42,8 @@ export const LIGHTING_CONFIG = {
     environmentMap: {
         enabled: true,
         path: './assets/hdri/jewelry_studio.exr',
-        intensity: 1.0,
-        envMapIntensity: 1.0,
+        intensity: 0.7, // Reduced from 1.0 for more realistic lighting
+        envMapIntensity: 0.7,
         showBackground: false
     },
     shadowCatcher: {
@@ -57,7 +57,7 @@ export const LIGHTING_CONFIG = {
             type: 'SpotLight',
             enabled: true,
             position: { x: 5, y: 8, z: 5 },
-            intensity: 100,
+            intensity: 60, // Reduced from 100 to prevent overblown highlights
             color: 0xffffff,
             angle: Math.PI / 4,
             penumbra: 0.5,
@@ -72,7 +72,7 @@ export const LIGHTING_CONFIG = {
             type: 'SpotLight',
             enabled: true,
             position: { x: -5, y: 8, z: -3 },
-            intensity: 50,
+            intensity: 30, // Reduced from 50
             color: 0xffffee, // Slightly warm for gold
             angle: Math.PI / 4,
             penumbra: 1,
@@ -83,7 +83,7 @@ export const LIGHTING_CONFIG = {
             type: 'SpotLight',
             enabled: true,
             position: { x: 0, y: 5, z: -8 },
-            intensity: 67,
+            intensity: 40, // Reduced from 67
             color: 0xffffff,
             angle: Math.PI / 4,
             penumbra: 1,
@@ -114,6 +114,7 @@ export class LightingSystem {
         this.showHDRIBackground = false;
         this.currentEnvironmentMap = null;
         this.currentIntensity = LIGHTING_CONFIG.environmentMap.intensity;
+        this.isDarkMode = true; // Default to dark mode
         
         this.setupRenderer();
         this.initializeEnvironmentMap(this.currentIntensity);
@@ -131,7 +132,7 @@ export class LightingSystem {
         }, 100);
     }
 
-    createGradientBackground() {
+    createGradientBackground(isDarkMode = true) {
         const canvas = document.createElement('canvas');
         canvas.width = 2;
         canvas.height = 2;
@@ -139,10 +140,17 @@ export class LightingSystem {
         const context = canvas.getContext('2d');
         const gradient = context.createLinearGradient(0, 0, 0, 2);
         
-        // Define gradient colors - dark for jewelry to enhance shine
-        gradient.addColorStop(0, '#0a0a0a');
-        gradient.addColorStop(0.5, '#121212');
-        gradient.addColorStop(0.9, '#000000');
+        if (isDarkMode) {
+            // Dark gradient for dark mode - enhances jewelry shine
+            gradient.addColorStop(0, '#0a0a0a');
+            gradient.addColorStop(0.5, '#121212');
+            gradient.addColorStop(0.9, '#000000');
+        } else {
+            // Light gradient for light mode - softer, brighter background
+            gradient.addColorStop(0, '#f5f5f5');
+            gradient.addColorStop(0.5, '#e8e8e8');
+            gradient.addColorStop(0.9, '#d0d0d0');
+        }
 
         context.fillStyle = gradient;
         context.fillRect(0, 0, 2, 2);
@@ -312,9 +320,21 @@ export class LightingSystem {
             this.scene.background = this.currentEnvironmentMap;
             console.log("Showing HDRI background");
         } else {
-            // Use gradient background
-            this.scene.background = this.createGradientBackground();
+            // Use gradient background with current theme
+            const isDarkMode = this.isDarkMode !== undefined ? this.isDarkMode : true;
+            this.scene.background = this.createGradientBackground(isDarkMode);
             console.log("Showing gradient background");
+        }
+    }
+
+    // Update background based on theme
+    updateBackgroundTheme(isDarkMode) {
+        this.isDarkMode = isDarkMode;
+        
+        // Only update if HDRI background is not showing
+        if (!this.showHDRIBackground) {
+            this.scene.background = this.createGradientBackground(isDarkMode);
+            console.log(`Background updated for ${isDarkMode ? 'dark' : 'light'} mode`);
         }
     }
    
@@ -347,8 +367,9 @@ initializeEnvironmentMap(intensity) {
     if (this.showHDRIBackground) {
         this.scene.background = placeholderEnvMap;
     } else {
-        // Use gradient background as fallback
-        this.scene.background = this.createGradientBackground();
+        // Use gradient background as fallback with current theme
+        const isDarkMode = this.isDarkMode !== undefined ? this.isDarkMode : true;
+        this.scene.background = this.createGradientBackground(isDarkMode);
     }
     
     // Set initial intensity using the stored value
