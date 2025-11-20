@@ -12,19 +12,19 @@ export const METAL_PRESETS = {
         ior: 2.5
     },
     silver: {
-        color: 0xE0E0E0,
-        roughness: 0.1,
+        color: 0xF5F5F5, // Brighter, whiter - more reflective and cooler tone
+        roughness: 0.08, // Slightly smoother for more reflection
         metalness: 1.0,
-        envMapIntensity: 0.8, // Reduced from 1.2
+        envMapIntensity: 0.9, // Higher reflection intensity for bright silver
         clearcoat: 0.0,
         reflectivity: 1.0,
         ior: 2.3
     },
     platinum: {
-        color: 0xE5E4E2,
-        roughness: 0.08,
+        color: 0xD3D3D3, // Darker, more neutral gray - distinct from silver
+        roughness: 0.12, // Slightly more matte than silver
         metalness: 1.0,
-        envMapIntensity: 0.75, // Reduced from 1.1
+        envMapIntensity: 0.7, // Lower reflection for more subdued appearance
         clearcoat: 0.0,
         reflectivity: 1.0,
         ior: 2.7

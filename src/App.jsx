@@ -60,8 +60,8 @@ const CameraControls = () => {
           if (window.scene && window.scene.userData.controls) {
             const controls = window.scene.userData.controls;
             controls.autoRotate = !controls.autoRotate;
-            controls.autoRotateSpeed = 2.0;
-            console.log("Auto-rotation toggled:", controls.autoRotate);
+            controls.autoRotateSpeed = 0.5; // Reduced from 2.0 for slower rotation
+            console.log("Auto-rotation toggled:", controls.autoRotate, "Speed:", controls.autoRotateSpeed);
           }
         }}
         className="p-2 rounded-lg transition-colors relative group"

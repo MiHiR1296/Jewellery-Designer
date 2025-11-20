@@ -7,20 +7,27 @@ let keysProcessed = {};
 
 // Add keyboard event listeners
 document.addEventListener('keydown', (event) => {
-    keys[event.key.toLowerCase()] = true;
-    keysPressedThisFrame[event.key.toLowerCase()] = true;
+    const key = event.key.toLowerCase();
+    keys[key] = true;
+    keysPressedThisFrame[key] = true;
+    
+    // Prevent default for camera control keys to avoid conflicts
+    if (['w', 'a', 's', 'd', 'q', 'e', 'f', 'r', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+        event.preventDefault();
+    }
 });
 
 document.addEventListener('keyup', (event) => {
-    keys[event.key.toLowerCase()] = false;
-    delete keysPressedThisFrame[event.key.toLowerCase()];
-    delete keysProcessed[event.key.toLowerCase()];
+    const key = event.key.toLowerCase();
+    keys[key] = false;
+    delete keysPressedThisFrame[key];
+    delete keysProcessed[key];
 });
 
 export function animate(renderer, scene, camera, controls, modelControls) {
     const clock = new THREE.Clock();
-    const moveSpeed = 0.1; // Slower for more precise jewelry movement
-    const rotateSpeed = 0.01; // Slower for more precise rotation
+    const moveSpeed = 0.02; // Reduced from 0.1 for much slower, more controlled movement
+    const rotateSpeed = 0.005; // Reduced from 0.01 for slower rotation
     let animationsPlaying = true;
 
     function resetCamera() {
@@ -74,7 +81,9 @@ export function animate(renderer, scene, camera, controls, modelControls) {
         }
 
         // Process single-press keys (like F and R)
-        Object.keys(keysPressedThisFrame).forEach(key => {
+        // Use a copy of keysPressedThisFrame to avoid iteration issues
+        const keysToProcess = Object.keys(keysPressedThisFrame);
+        keysToProcess.forEach(key => {
             if (!keysProcessed[key]) {
                 // Reset camera (F)
                 if (key === 'f') {
@@ -84,9 +93,14 @@ export function animate(renderer, scene, camera, controls, modelControls) {
                 
                 // Auto-rotation toggle (R)
                 if (key === 'r') {
-                    controls.autoRotate = !controls.autoRotate;
-                    controls.autoRotateSpeed = 2.0; // Slow, elegant rotation for jewelry
-                    keysProcessed[key] = true;
+                    if (controls) {
+                        controls.autoRotate = !controls.autoRotate;
+                        controls.autoRotateSpeed = 0.5; // Reduced from 2.0 for slower, more elegant rotation
+                        console.log("Auto-rotation toggled via R key:", controls.autoRotate, "Speed:", controls.autoRotateSpeed);
+                        keysProcessed[key] = true;
+                    } else {
+                        console.warn("Controls not available for R key toggle");
+                    }
                 }
             }
         });
@@ -163,7 +177,7 @@ export function animate(renderer, scene, camera, controls, modelControls) {
 
     // Initialize auto-rotate for jewelry display
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.5; // Slow, elegant rotation
+    controls.autoRotateSpeed = 0.5; // Slow, elegant rotation (reduced from higher values)
 
     // Start the animation loop
     window.stopAnimation = false; // Reset any existing stop flag
