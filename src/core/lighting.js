@@ -48,9 +48,9 @@ export const LIGHTING_CONFIG = {
     },
     shadowCatcher: {
         enabled: true,
-        size: 20,
-        opacity: 0.05,
-        position: { x: 0, y: -0.001, z: 0 }
+        size: 1.4,
+        opacity: 0.14,
+        position: { x: 0, y: -0.011, z: 0 }
     },
     lights: {
         keyLight: {
@@ -174,6 +174,7 @@ export class LightingSystem {
         this.renderer.useLegacyLights = false;
         
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+        this.renderer.setClearColor(0x000000, 0);
     }
 
     async loadHDRI(path, intensity) {
@@ -202,11 +203,7 @@ export class LightingSystem {
 
             // Always set the environment map for reflections
             this.scene.environment = envMap;
-
-            // Only set as background if showHDRIBackground is true
-            if (this.showHDRIBackground) {
-                this.scene.background = envMap;
-            }
+            this.scene.background = null;
 
             // Determine which intensity to use
             const intensityToUse = intensity !== undefined ? intensity : 
@@ -280,10 +277,11 @@ export class LightingSystem {
             return;
         }
         
-        // Calculate the model's center as the pivot point
-        const modelCenter = new THREE.Vector3();
-        const modelBox = new THREE.Box3().setFromObject(modelGroup);
-        modelBox.getCenter(modelCenter);
+        const pivot = this.scene.userData.displayStage?.pivot?.clone() || new THREE.Vector3();
+        if (!this.scene.userData.displayStage?.pivot) {
+            const modelBox = new THREE.Box3().setFromObject(modelGroup);
+            modelBox.getCenter(pivot);
+        }
         
         // Store initial positions if not already stored
         if (!this.initialCameraPosition) {
@@ -292,19 +290,19 @@ export class LightingSystem {
             this.initialModelRotation = modelGroup.rotation.y;
         }
         
-        // Calculate the initial relative camera position from the model center
-        const relativePosition = this.initialCameraPosition.clone().sub(modelCenter);
+        // Calculate the initial relative camera position from the display center
+        const relativePosition = this.initialCameraPosition.clone().sub(pivot);
         
         // Rotate the camera around the model center
         const rotatedPosition = relativePosition.clone();
         rotatedPosition.applyAxisAngle(new THREE.Vector3(0, 1, 0), -radians);
-        rotatedPosition.add(modelCenter);
+        rotatedPosition.add(pivot);
         
         // Update camera position
         camera.position.copy(rotatedPosition);
         
-        // Keep the camera's target on the model center
-        controls.target.copy(modelCenter);
+        // Keep the camera's target on the display center
+        controls.target.copy(pivot);
         
         // Rotate the model in the same direction for consistent movement
         modelGroup.rotation.y = this.initialModelRotation - radians;
@@ -313,29 +311,26 @@ export class LightingSystem {
         controls.update();
     }
 
+    resetRotationState() {
+        this.initialCameraPosition = null;
+        this.initialControlsTarget = null;
+        this.initialModelRotation = null;
+        this.environmentRotation = 0;
+    }
+
     toggleBackground(show) {
         this.showHDRIBackground = show;
-        
-        if (show && this.currentEnvironmentMap) {
-            this.scene.background = this.currentEnvironmentMap;
-            console.log("Showing HDRI background");
-        } else {
-            // Use gradient background with current theme
-            const isDarkMode = this.isDarkMode !== undefined ? this.isDarkMode : true;
-            this.scene.background = this.createGradientBackground(isDarkMode);
-            console.log("Showing gradient background");
-        }
+        this.scene.background = null;
+        this.renderer.setClearColor(0x000000, 0);
+        console.log(show ? "Showing staged configurator backdrop" : "Showing soft configurator backdrop");
     }
 
     // Update background based on theme
     updateBackgroundTheme(isDarkMode) {
         this.isDarkMode = isDarkMode;
-        
-        // Only update if HDRI background is not showing
-        if (!this.showHDRIBackground) {
-            this.scene.background = this.createGradientBackground(isDarkMode);
-            console.log(`Background updated for ${isDarkMode ? 'dark' : 'light'} mode`);
-        }
+        this.scene.background = null;
+        this.renderer.setClearColor(0x000000, 0);
+        console.log(`Background updated for ${isDarkMode ? 'dark' : 'light'} mode`);
     }
    
    // Updated initializeEnvironmentMap in lighting.js
@@ -363,14 +358,8 @@ initializeEnvironmentMap(intensity) {
     // Set as environment always
     this.scene.environment = placeholderEnvMap;
     
-    // Only set as background if showHDRIBackground is true
-    if (this.showHDRIBackground) {
-        this.scene.background = placeholderEnvMap;
-    } else {
-        // Use gradient background as fallback with current theme
-        const isDarkMode = this.isDarkMode !== undefined ? this.isDarkMode : true;
-        this.scene.background = this.createGradientBackground(isDarkMode);
-    }
+    this.scene.background = null;
+    this.renderer.setClearColor(0x000000, 0);
     
     // Set initial intensity using the stored value
     this.updateEnvironmentMapIntensity(this.currentIntensity);

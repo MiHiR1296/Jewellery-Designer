@@ -62,17 +62,20 @@ export const METAL_PRESETS = {
 export const GEM_PRESETS = {
     diamond: {
         color: 0xFFFFFF,
-        roughness: 0.01,
-        metalness: 0.1,
-        transmission: 0.95,
-        ior: 2.42,
+        roughness: 0.0, // Perfectly smooth for maximum sparkle
+        metalness: 0.0, // Non-metallic
+        transmission: 1.0, // Fully transparent for maximum light refraction
+        ior: 2.42, // Diamond's actual refractive index (higher than glass)
         thickness: 4.0,
-        envMapIntensity: 1.0, // Reduced from 1.6 to prevent overblown reflections
-        clearcoat: 0.5,
-        clearcoatRoughness: 0.01,
-        reflectivity: 0.9,
+        envMapIntensity: 1.3, // Higher for more sparkle and reflections
+        clearcoat: 1.0, // Maximum clearcoat for diamond-like surface
+        clearcoatRoughness: 0.0, // Perfectly smooth clearcoat
+        reflectivity: 1.0, // Maximum reflectivity
         transparent: true,
-        opacity: 0.9
+        opacity: 0.98, // Slightly more opaque to show internal reflections and depth
+        // Enhanced properties for diamond-like appearance
+        sheen: 0.0,
+        sheenRoughness: 0.0
     },
     ruby: {
         color: 0xE0115F,

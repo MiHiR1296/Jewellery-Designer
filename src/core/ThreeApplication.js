@@ -95,6 +95,7 @@ export default class ThreeApplication {
         
         try {
             this.modelControls = await this.modelLoader.loadModel(modelId, this.materialManager);
+            this.lightingSystem?.resetRotationState?.();
             return this.modelControls;
         } catch (error) {
             console.error('Error loading model:', error);

@@ -52,55 +52,55 @@ export const darkTheme = {
   }
 };
 
-// Light Mode: Pearlescent White & Platinum with Purple Accent
+// Light Mode: warm off-white with purple and metal accents
 export const lightTheme = {
   name: 'pearl',
   colors: {
     // Backgrounds
     background: {
-      primary: '#F8F8F8',
-      secondary: '#FFFFFF',
-      tertiary: '#F5F5F5',
-      highlight: '#4B008210', // Purple with low opacity
+      primary: '#F6F0E8',
+      secondary: '#FFFDF8',
+      tertiary: '#F1E7DA',
+      highlight: '#6D3FA014',
     },
     // Text colors
     text: {
-      primary: '#333333',
-      secondary: '#4B0082', // Purple
-      accent: '#E5E4E2', // Platinum
-      muted: '#666666',
+      primary: '#302821',
+      secondary: '#5E368A',
+      accent: '#A77A3E',
+      muted: '#766B62',
     },
     // Borders
     border: {
-      primary: '#E5E4E2',
-      secondary: '#4B0082',
-      light: '#E5E4E280', // Platinum with 50% opacity
+      primary: '#D8C7B4',
+      secondary: '#6D3FA0',
+      light: '#D8C7B480',
     },
     // Element colors
     elements: {
-      primary: '#E5E4E2', // Platinum
-      secondary: '#4B0082', // Purple
-      accent: '#9370DB', // Medium purple
-      slider: '#4B0082',
+      primary: '#B48751',
+      secondary: '#6D3FA0',
+      accent: '#C78D84',
+      slider: '#6D3FA0',
     },
     // Gradients
     gradients: {
-      platinum: 'linear-gradient(90deg, #E5E4E2 0%, #FFFFFF 100%)',
-      platinumPurple: 'linear-gradient(90deg, #E5E4E2 0%, #4B008240 100%)',
-      panel: 'linear-gradient(180deg, #F8F8F8 0%, #F0F0F0 100%)',
+      platinum: 'linear-gradient(90deg, #E9D9C4 0%, #FFFDF8 100%)',
+      platinumPurple: 'linear-gradient(90deg, #E9D9C4 0%, #6D3FA040 100%)',
+      panel: 'linear-gradient(180deg, #FFFDF8 0%, #F3E8DA 100%)',
     }
   },
   shadows: {
-    small: '0 2px 4px rgba(0, 0, 0, 0.05)',
-    medium: '0 4px 6px rgba(0, 0, 0, 0.08)',
-    large: '0 10px 15px rgba(0, 0, 0, 0.1)',
-    glow: '0 0 10px rgba(229, 228, 226, 0.5)', // Platinum glow
-    purpleGlow: '0 0 10px rgba(75, 0, 130, 0.2)', // Purple glow
+    small: '0 8px 22px rgba(69, 49, 29, 0.08)',
+    medium: '0 16px 40px rgba(69, 49, 29, 0.13)',
+    large: '0 26px 70px rgba(69, 49, 29, 0.18)',
+    glow: '0 0 0 1px rgba(180, 135, 81, 0.18)',
+    purpleGlow: '0 12px 28px rgba(109, 63, 160, 0.22)',
   },
   fonts: {
-    primary: "'Cinzel', Georgia, serif",
-    secondary: "'Cormorant', Georgia, serif",
-    heading: "'Cinzel', Georgia, serif",
+    primary: "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    secondary: "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+    heading: "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
   }
 };
 

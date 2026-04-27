@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import * as THREE from 'three';
 import { METAL_PRESETS, FINISH_PRESETS } from '../core/materialManager';
 import { Palette } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
 
 // Component for metal type and finish selection
 const MetalControls = ({ onMetalChange, onFinishChange, onColorChange }) => {
   const [selectedMetal, setSelectedMetal] = useState('gold');
   const [selectedFinish, setSelectedFinish] = useState('polished');
   const [customColor, setCustomColor] = useState('#FFD700'); // Default gold color
-  const { theme } = useTheme();
   
   // Handle metal type change
   const handleMetalChange = (e) => {

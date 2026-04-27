@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { Gem } from 'lucide-react';
 import * as THREE from 'three';
 import { GEM_PRESETS } from '../core/materialManager';
-import { useTheme } from './ThemeProvider';
 
 // Component for gemstone selection and customization
 const GemControls = ({ onGemChange, onGemColorChange }) => {
   const [selectedGem, setSelectedGem] = useState('diamond');
   const [customColor, setCustomColor] = useState('#FFFFFF'); // Default diamond color
-  const { theme } = useTheme();
   
   // Handle gem type change
   const handleGemChange = (e) => {
@@ -31,32 +29,7 @@ const GemControls = ({ onGemChange, onGemColorChange }) => {
     onGemColorChange(color);
   };
   
-  // Get refractive index text for the gem
-  const getGemInfo = (gemType) => {
-    const gem = GEM_PRESETS[gemType];
-    return {
-      name: gemType.charAt(0).toUpperCase() + gemType.slice(1),
-      ior: gem.ior.toFixed(2),
-      description: getGemDescription(gemType)
-    };
-  };
-  
-  // Get descriptions for gem types
-  const getGemDescription = (gemType) => {
-    const descriptions = {
-      'diamond': 'Brilliant, high-sparkle gemstone with exceptional light refraction',
-      'ruby': 'Deep red precious gemstone, symbol of passion and prosperity',
-      'sapphire': 'Blue precious gemstone known for its rich color and durability',
-      'emerald': 'Vibrant green gemstone, prized for its lush color',
-      'amethyst': 'Purple variety of quartz with elegant color variations',
-      'topaz': 'Warm-toned gemstone available in various shades including yellow and blue'
-    };
-    
-    return descriptions[gemType] || 'Precious gemstone with unique optical properties';
-  };
-  
-  // Get the selected gem's info
-  const gemInfo = getGemInfo(selectedGem);
+  const selectedGemPreset = GEM_PRESETS[selectedGem];
   
   return (
     <div className="space-y-4">
@@ -89,29 +62,6 @@ const GemControls = ({ onGemChange, onGemColorChange }) => {
             </option>
           ))}
         </select>
-        <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{gemInfo.description}</p>
-      </div>
-      
-      {/* Gem Info Display */}
-      <div className="rounded-lg p-3" style={{ 
-        backgroundColor: 'var(--bg-highlight)',
-        borderLeft: '3px solid var(--element-secondary)'
-      }}>
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium" style={{ fontFamily: 'var(--font-primary)' }}>
-            {gemInfo.name} Properties
-          </span>
-          <span className="text-xs px-2 py-1 rounded" style={{ 
-            backgroundColor: 'var(--bg-tertiary)',
-            color: 'var(--text-secondary)'
-          }}>
-            RI: {gemInfo.ior}
-          </span>
-        </div>
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          The refractive index affects how light behaves within the gemstone.
-          Higher values produce more internal reflections and sparkle.
-        </p>
       </div>
       
       {/* Custom Color */}
@@ -144,7 +94,7 @@ const GemControls = ({ onGemChange, onGemColorChange }) => {
       </div>
       
       {/* Preview Color Display */}
-      <div className="h-16 w-full rounded-lg relative overflow-hidden">
+      <div className="h-12 w-full rounded-lg relative overflow-hidden">
         <div 
           className="absolute inset-0"
           style={{ 
@@ -155,6 +105,12 @@ const GemControls = ({ onGemChange, onGemColorChange }) => {
         <div className="absolute inset-0" style={{ 
           background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%)'
         }} />
+        <span className="absolute right-2 top-2 rounded px-2 py-1 text-xs font-semibold" style={{
+          backgroundColor: 'rgba(255, 253, 248, 0.78)',
+          color: 'var(--text-secondary)'
+        }}>
+          RI {selectedGemPreset.ior.toFixed(2)}
+        </span>
       </div>
     </div>
   );

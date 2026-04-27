@@ -13,23 +13,12 @@ export const useTheme = () => useContext(ThemeContext);
 
 // Theme Provider component to wrap around the app
 export const ThemeProvider = ({ children }) => {
-  // Check for user's saved preference or use system preference
-  const getInitialMode = () => {
-    const savedMode = localStorage.getItem('theme-mode');
-    if (savedMode) {
-      return savedMode === 'dark';
-    }
-    // If no saved preference, check system preference
-    return window.matchMedia && 
-           window.matchMedia('(prefers-color-scheme: dark)').matches;
-  };
-
-  const [isDarkMode, setIsDarkMode] = useState(getInitialMode);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [theme, setTheme] = useState(getTheme(isDarkMode));
 
   // Toggle between light and dark mode
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode(false);
   };
 
   // Update theme when mode changes
@@ -38,7 +27,7 @@ export const ThemeProvider = ({ children }) => {
     setTheme(newTheme);
     
     // Save preference to localStorage
-    localStorage.setItem('theme-mode', isDarkMode ? 'dark' : 'light');
+    localStorage.setItem('theme-mode', 'light');
     
     // Apply CSS variables to document root
     const variables = generateThemeVariables(newTheme);

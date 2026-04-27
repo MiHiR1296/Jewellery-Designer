@@ -1,29 +1,16 @@
 import React, { useState } from 'react';
 import { RotateCw, Sun, Eye, EyeOff } from 'lucide-react';
-import { HDRI_OPTIONS } from '../core/lighting';
 import { useTheme } from './ThemeProvider';
 
 const HDRIControls = ({ 
-    onHDRIChange, 
     onRotationChange, 
     onIntensityChange,
     onBackgroundToggle 
 }) => {
     const [rotation, setRotation] = useState(0);
-    const [selectedHDRI, setSelectedHDRI] = useState('jewelry_studio');
-    const [intensity, setIntensity] = useState(1.0);
+    const [intensity, setIntensity] = useState(0.7);
     const [showAsBackground, setShowAsBackground] = useState(false);
-    const { isDarkMode, theme } = useTheme();
-
-    const handleHDRIChange = (e) => {
-        const hdriId = e.target.value;
-        const defaultIntensity = HDRI_OPTIONS[hdriId]?.defaultIntensity || 1.0;
-        setSelectedHDRI(hdriId);
-        setIntensity(defaultIntensity);
-        
-        console.log(`Loading HDRI: ${hdriId} with intensity: ${defaultIntensity}`);
-        onHDRIChange(HDRI_OPTIONS[hdriId]?.path, defaultIntensity);
-    };
+    const { isDarkMode } = useTheme();
 
     const handleRotationChange = (e) => {
         const newRotation = parseFloat(e.target.value);
@@ -56,7 +43,7 @@ const HDRIControls = ({
                 </div>
                 <button
                     onClick={toggleBackground}
-                    title={showAsBackground ? "Hide HDRI Background" : "Show HDRI Background"}
+                    title={showAsBackground ? "Use soft backdrop" : "Use staged backdrop"}
                     className="p-2 rounded-lg transition-colors"
                     style={{
                         backgroundColor: showAsBackground 
@@ -80,29 +67,6 @@ const HDRIControls = ({
                     )}
                 </button>
             </h3>
-            
-            {/* HDRI Selection */}
-            <div className="space-y-1">
-                <label className="text-sm" style={{ color: 'var(--text-muted)' }}>Environment</label>
-                <select
-                    value={selectedHDRI}
-                    onChange={handleHDRIChange}
-                    className="w-full px-3 py-1 rounded-lg text-sm focus:outline-none"
-                    style={{
-                        backgroundColor: 'var(--bg-tertiary)',
-                        color: 'var(--text-primary)',
-                        borderColor: 'var(--border-light)',
-                        fontFamily: 'var(--font-primary)'
-                    }}
-                >
-                    {Object.entries(HDRI_OPTIONS).map(([id, hdri]) => (
-                        <option key={id} value={id}>{hdri.name}</option>
-                    ))}
-                </select>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    {HDRI_OPTIONS[selectedHDRI]?.description || "Select an environment lighting preset"}
-                </p>
-            </div>
 
             {/* Rotation Control */}
             <div className="space-y-1">
@@ -139,21 +103,6 @@ const HDRIControls = ({
                     className="w-full"
                     style={{ accentColor: 'var(--element-slider)' }}
                 />
-            </div>
-            
-            {/* Light Preview */}
-            <div className="mt-2 p-2 rounded-lg" style={{ 
-                backgroundColor: 'var(--bg-highlight)', 
-                borderLeft: '3px solid var(--element-secondary)'
-            }}>
-                <div className="flex justify-between text-xs mb-1">
-                    <span style={{ color: 'var(--text-muted)' }}>Current Light:</span>
-                    <span style={{ color: 'var(--text-primary)' }}>{HDRI_OPTIONS[selectedHDRI]?.name}</span>
-                </div>
-                <div className="h-2 w-full rounded-full overflow-hidden" style={{ 
-                    background: 'var(--gradient-secondary)', 
-                    opacity: intensity
-                }}></div>
             </div>
         </div>
     );

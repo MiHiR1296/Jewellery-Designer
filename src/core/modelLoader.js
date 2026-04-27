@@ -6,7 +6,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 export const JEWELRY_MODELS = {
     'eclipse_ruby_ring': {
         name: "Eclipse Ruby Ring",
-        path: './assets/models/Eclipse_Ruby_Ring.glb',
+        path: './assets/models/Updated%20Rotation/Eclipse_Ruby_Ring.glb',
         scale: 1.0,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
@@ -25,7 +25,7 @@ export const JEWELRY_MODELS = {
     },
     'diamond_ring': {
         name: "Diamond Ring",
-        path: './assets/models/Diamond_Ring.glb',
+        path: './assets/models/Updated%20Rotation/Diamond_Ring.glb',
         scale: 1.0,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
@@ -199,6 +199,8 @@ export class ModelLoader {
                     modelConfig.rotation.z || 0
                 );
             }
+
+            this.applyDisplayPlacement(modelConfig);
             
             // Handle animations if present
             if (gltf.animations && gltf.animations.length > 0) {
@@ -212,9 +214,7 @@ export class ModelLoader {
                 this.modelControls.playAllAnimations();
             }
     
-            // Calculate center and update camera
-            const center = this.sceneManager.calculateSceneCenter();
-            this.sceneManager.updateControlsTarget(center);
+            this.sceneManager.updateDisplayStageForModel(this.loadedModelGroup);
             this.sceneManager.updateCameraForModel(this.loadedModelGroup);
             
             // Apply default materials if specified
@@ -257,6 +257,42 @@ export class ModelLoader {
             );
         });
     }
+
+    applyDisplayPlacement(modelConfig) {
+        if (!this.loadedModelGroup) return;
+
+        const displayRotation = modelConfig.displayRotation;
+        if (displayRotation) {
+            this.loadedModelGroup.rotation.set(
+                displayRotation.x || 0,
+                displayRotation.y || 0,
+                displayRotation.z || 0
+            );
+        }
+
+        if (this.sceneManager?.placeModelOnDisplayStage) {
+            this.sceneManager.placeModelOnDisplayStage(this.loadedModelGroup);
+            return;
+        }
+
+        this.loadedModelGroup.updateMatrixWorld(true);
+
+        const box = new THREE.Box3().setFromObject(this.loadedModelGroup);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+
+        this.loadedModelGroup.position.x -= center.x;
+        this.loadedModelGroup.position.z -= center.z;
+        this.loadedModelGroup.updateMatrixWorld(true);
+
+        const settledBox = new THREE.Box3().setFromObject(this.loadedModelGroup);
+        const displayStage = this.scene.userData.displayStage;
+        const dishTopY = displayStage?.dishTopY ?? 0;
+        const contactGap = 0.0015;
+        this.loadedModelGroup.position.y += dishTopY + contactGap - settledBox.min.y;
+
+        this.loadedModelGroup.updateMatrixWorld(true);
+    }
     
     async processLoadedModel(gltf, modelConfig, materialManager) {
         // Map to store materials by part name
@@ -298,8 +334,8 @@ export class ModelLoader {
             }
         });
         
-        // Mark the entire gltf.scene as a loaded model for easier detection
-        gltf.scene.userData.isLoadedModel = true;
+        // The parent loadedModelGroup is the camera/placement target.
+        gltf.scene.userData.isLoadedModelChild = true;
         gltf.scene.name = modelConfig.name || 'Loaded Model';
         
         console.log(`Processed model: ${modelConfig.name}`, gltf.scene);

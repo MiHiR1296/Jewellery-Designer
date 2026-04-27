@@ -5,7 +5,6 @@ import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
-import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js';
 import { BrightnessContrastShader } from 'three/examples/jsm/shaders/BrightnessContrastShader.js';
 import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
 
@@ -58,6 +57,7 @@ export class PostProcessing {
         
         // Add SAO pass for ambient occlusion - tuned for jewelry
         const saoPass = new SAOPass(this.scene, this.camera, false, true);
+        saoPass.enabled = false;
         saoPass.params.output = SAOPass.OUTPUT.Default;
         saoPass.params.saoBias = JEWELRY_SETTINGS.sao.bias;
         saoPass.params.saoIntensity = JEWELRY_SETTINGS.sao.intensity;
@@ -74,37 +74,45 @@ export class PostProcessing {
         
         this.composer.addPass(saoPass);
         
-        // Bloom effect for jewelry highlights
-        const bloomPass = new UnrealBloomPass(
-            new THREE.Vector2(renderSize.width, renderSize.height),
-            JEWELRY_SETTINGS.bloom.strength,
-            JEWELRY_SETTINGS.bloom.radius,
-            JEWELRY_SETTINGS.bloom.threshold
-        );
-        this.composer.addPass(bloomPass);
-        
-        // Gamma correction for natural color appearance
-        const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-        this.composer.addPass(gammaCorrectionPass);
-        
         // Brightness & contrast adjustment
         const brightnessContrastPass = new ShaderPass(BrightnessContrastShader);
+        brightnessContrastPass.enabled = false;
         brightnessContrastPass.uniforms.brightness.value = JEWELRY_SETTINGS.contrast.brightness;
         brightnessContrastPass.uniforms.contrast.value = JEWELRY_SETTINGS.contrast.contrast;
         this.composer.addPass(brightnessContrastPass);
         
         // Vignette effect 
         const vignettePass = new ShaderPass(VignetteShader);
+        vignettePass.enabled = false;
         vignettePass.uniforms.offset.value = JEWELRY_SETTINGS.vignette.offset;
         vignettePass.uniforms.darkness.value = JEWELRY_SETTINGS.vignette.darkness;
         this.composer.addPass(vignettePass);
         
+        // Chromatic Aberration for diamond-like dispersion effect
+        const chromaticAberrationShader = this.createChromaticAberrationShader();
+        const chromaticAberrationPass = new ShaderPass(chromaticAberrationShader);
+        chromaticAberrationPass.enabled = false;
+        chromaticAberrationPass.uniforms.amount.value = 0.004; // Subtle effect, mainly visible on bright edges like diamonds
+        this.composer.addPass(chromaticAberrationPass);
+        this.chromaticAberrationPass = chromaticAberrationPass;
+
         // SMAA for smooth anti-aliasing
         const smaaPass = new SMAAPass(
             renderSize.width * this.renderer.getPixelRatio(),
             renderSize.height * this.renderer.getPixelRatio()
         );
+        smaaPass.enabled = false;
         this.composer.addPass(smaaPass);
+
+        // Bloom stays last because UnrealBloomPass composites directly into the output buffer.
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(renderSize.width, renderSize.height),
+            JEWELRY_SETTINGS.bloom.strength,
+            JEWELRY_SETTINGS.bloom.radius,
+            JEWELRY_SETTINGS.bloom.threshold
+        );
+        bloomPass.enabled = false;
+        this.composer.addPass(bloomPass);
         
         // Store references
         this.saoPass = saoPass;
@@ -201,6 +209,62 @@ export class PostProcessing {
         
         if (this.bloomPass) {
             this.bloomPass.resolution.set(renderSize.width, renderSize.height);
+        }
+    }
+
+    // Create chromatic aberration shader for diamond dispersion effect
+    createChromaticAberrationShader() {
+        return {
+            uniforms: {
+                tDiffuse: { value: null },
+                amount: { value: 0.003 } // Chromatic aberration amount
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D tDiffuse;
+                uniform float amount;
+                varying vec2 vUv;
+
+                void main() {
+                    vec2 offset = amount * vec2(vUv - 0.5);
+
+                    // Sample RGB channels with slight offsets to create chromatic aberration
+                    // This creates the prism-like color separation effect seen in diamonds
+                    float r = texture2D(tDiffuse, vUv + offset * 1.0).r;
+                    float g = texture2D(tDiffuse, vUv + offset * 0.5).g;
+                    float b = texture2D(tDiffuse, vUv - offset * 0.5).b;
+
+                    // Enhance the effect on bright areas (where diamonds sparkle)
+                    vec3 color = vec3(r, g, b);
+                    float brightness = dot(color, vec3(0.299, 0.587, 0.114));
+
+                    // Apply stronger chromatic aberration on bright areas
+                    float aberrationStrength = smoothstep(0.3, 1.0, brightness) * amount * 2.0;
+                    vec2 brightOffset = aberrationStrength * vec2(vUv - 0.5);
+
+                    float rBright = texture2D(tDiffuse, vUv + brightOffset * 1.2).r;
+                    float gBright = texture2D(tDiffuse, vUv + brightOffset * 0.6).g;
+                    float bBright = texture2D(tDiffuse, vUv - brightOffset * 0.6).b;
+
+                    // Blend based on brightness
+                    color = mix(color, vec3(rBright, gBright, bBright), brightness * 0.5);
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `
+        };
+    }
+
+    // Method to adjust chromatic aberration intensity
+    setChromaticAberration(amount) {
+        if (this.chromaticAberrationPass) {
+            this.chromaticAberrationPass.uniforms.amount.value = amount;
         }
     }
 }

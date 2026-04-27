@@ -4,7 +4,7 @@ import { useTheme } from './ThemeProvider';
 
 const PartSelector = ({ onPartSelect, selectedPart }) => {
   const [availableParts, setAvailableParts] = useState([]);
-  const { isDarkMode, theme } = useTheme();
+  const { isDarkMode } = useTheme();
   
   // Find available parts in the scene
   useEffect(() => {
